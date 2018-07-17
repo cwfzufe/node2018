@@ -1,4 +1,5 @@
 const express=require('express')
+const postModel = require('../models/post')
 
 const router = express.Router()
 
@@ -7,17 +8,32 @@ router.get('/', function(req, res){
 	if (req.query['author'] != null) {
 		res.send('这是'+req.query['author']+'的个人页面')
 	} else {
-		res.send('首页')
+		res.render('posts')
 	}
 })
 
 
 router.get('/create',  function(req, res){
-	res.send('发表文章页面')
+	res.render('newpost')
 })
 
 router.post('/create',  function(req, res){
-	res.send('发表文章功能的实现')
+	const title = req.body.postTitle
+	const content = req.body.postContent	
+	// 将信息写入数据库
+	let post = {
+		title: title,
+		content: content,
+		author: req.session.user.username
+	}
+	
+	postModel.createPost(post, function(jsonRes) {
+		if (jsonRes.ok) {
+			res.send('<script>alert("发表成功！");location="/posts"</script>')
+		} else {				
+			res.send('<script>alert("发表失败。'+jsonRes.msg+'");location="javascript:history.go(-1)";</script>')		
+		}
+	})		
 })
 
 

@@ -13,5 +13,15 @@ module.exports = {
 				}
 			}
 		})
+	},
+	
+	queryUser: function queryUser(user, callback) {
+		dbPool.query('SELECT * FROM tb_user2 WHERE username=?', [user.username], function(err, results, fields){
+			if (err) {
+				callback({ok: false, msg: 'database error: ' + err.sqlMessage})
+			} else {
+				callback({ok: true, data: results})
+			}
+		})
 	}
 }

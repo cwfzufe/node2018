@@ -26,6 +26,11 @@ app.use(cookieSession({name:'session_id', keys: sessionArr, maxAge: 20*60*1000})
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(multer({dest:'./public/upload'}).any())
 
+app.use(function(req, res, next){
+	res.locals.user = req.session.user
+	next()
+})
+
 // 处理路由
 route(app)
 
