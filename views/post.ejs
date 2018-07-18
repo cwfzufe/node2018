@@ -1,0 +1,95 @@
+
+<!doctype html>
+
+<%- include("./conponents/head.ejs") %>
+
+<body>
+    
+	<div class="container">	
+		<div class="container">
+			<%- include("./conponents/top.ejs") %>		
+		</div>
+    <br>
+
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-10 blog-main">
+
+        <div class="blog-post">
+          <h2 class="blog-post-title"><%= post.title %></h2>
+          <p class="blog-post-meta"><%= post.posttime %> by
+            <a href="/posts?author=<%= post.author %>"><%= post.author %></a>.&nbsp;&nbsp;
+            <img src="/images/font-visited.png" height="16">(<%= post.pv %>)
+            <img src="/images/font-comment.png" height="16">(??)</p>
+
+          <p>
+			<%= post.content %>
+		  </p>
+        </div>
+        <!-- /.blog-post -->
+
+        <div class="blog-post">
+          <a class="btn btn-outline-primary" href="javascript:history.go(-1)">Return</a>
+		  
+		  <% if (user != null && user.username==post.author) { %>
+			  <a class="btn btn-outline-primary" href="/posts/<%= post.Id %>/edit">Edit</a>
+			  
+			  <a class="btn btn-outline-primary" href="/posts/<%= post.Id %>/remove">Remove</a>
+		  <% }%>
+
+          
+		  
+        </div>
+
+      </div>
+      <!-- /.blog-main -->
+
+    </div>
+    <!-- /.row -->
+
+    <h4>Comments</h4>
+    <hr>
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-9">
+	  
+	  
+        <div class="blog-comment">
+          <div class="blog-comment avatar">
+            <img src="/upload/46bc815ee96e2cbf994040fe52301362.png" />
+          </div>
+          <div class="blog-comment content">
+            <p class="blog-post-meta">Tue May 22 2018 11:22:13 GMT+0800 (CST) by
+              <a href="#">dd@dd.com</a>
+            </p>
+            <p>dddd
+			
+			</p>
+          </div>
+        </div>
+	  
+        <div class="blog-comment">
+          <div class="blog-comment avatar">
+            <img src="/upload/6e3945991c6f018037762ff25f3175c3.jpg" />
+          </div>
+          <div class="blog-comment content">
+            <p class="blog-post-meta">Tue May 22 2018 10:53:38 GMT+0800 (CST) by
+              <a href="#">aa@aa.com</a>
+            </p>
+            <p>comment test 1
+			
+			</p>
+          </div>
+        </div>
+	  
+
+	  
+      </div>
+    </div>
+
+  </main>
+  <!-- /.container -->
+
+  
+  <%- include("./conponents/footer.ejs") %>

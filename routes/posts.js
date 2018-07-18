@@ -1,23 +1,36 @@
 const express=require('express')
 const postModel = require('../models/post')
+const checkLogin = require('../middlewares/check').checkLogin
 
 const router = express.Router()
 
 // 业务逻辑代码：接口
 router.get('/', function(req, res){
 	if (req.query['author'] != null) {
-		res.send('这是'+req.query['author']+'的个人页面')
+		postModel.queryPostsByAuthor(req.query['author'], function(jsonRes){
+			if (jsonRes.ok) {
+				res.render('posts', {posts: jsonRes.data})
+			} else {
+				'<script>alert("查询失败。'+jsonRes.msg+'");location="javascript:history.go(-1)";</script>'
+			}			
+		})
 	} else {
-		res.render('posts')
+		postModel.queryPosts(function(jsonRes){
+			if (jsonRes.ok) {
+				res.render('posts', {posts: jsonRes.data})
+			} else {
+				'<script>alert("查询失败。'+jsonRes.msg+'");location="javascript:history.go(-1)";</script>'
+			}			
+		})
 	}
 })
 
 
-router.get('/create',  function(req, res){
+router.get('/create', checkLogin, function(req, res){
 	res.render('newpost')
 })
 
-router.post('/create',  function(req, res){
+router.post('/create', checkLogin, function(req, res){
 	const title = req.body.postTitle
 	const content = req.body.postContent	
 	// 将信息写入数据库
@@ -33,12 +46,18 @@ router.post('/create',  function(req, res){
 		} else {				
 			res.send('<script>alert("发表失败。'+jsonRes.msg+'");location="javascript:history.go(-1)";</script>')		
 		}
-	})		
+	})	
 })
 
 
 router.get('/:postId', function(req, res){
-	res.send('文章页面'+req.params.postId)
+	postModel.queryPostByIdAddPv(req.params.postId, function(jsonRes){
+			if (jsonRes.ok) {
+				res.render('post', {post: jsonRes.data[0]})
+			} else {
+				'<script>alert("查询失败。'+jsonRes.msg+'");location="javascript:history.go(-1)";</script>'
+			}			
+		})
 })
 
 

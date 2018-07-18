@@ -2,14 +2,16 @@ const express=require('express')
 const userModel = require('../models/user')
 const util = require('../lib/util')
 
+const checkNotLogin = require('../middlewares/check').checkNotLogin
+
 const router = express.Router()
 
 // 业务逻辑代码：接口
-router.get('/', function(req, res){
+router.get('/', checkNotLogin, function(req, res){
 	res.render('signup')
 })
 
-router.post('/', function(req, res){
+router.post('/', checkNotLogin, function(req, res){
 	const username = req.body.inputEmail
 	const password = req.body.inputPassword
 	const gender = req.body.gender
