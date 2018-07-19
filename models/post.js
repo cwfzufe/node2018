@@ -16,7 +16,7 @@ module.exports = {
 	},
 
 	queryPosts: function queryPosts(callback) {
-		dbPool.query('SELECT tb_post2.*, tb_user2.avatar FROM tb_post2 JOIN tb_user2 ON tb_post2.author = tb_user2.username ORDER BY posttime DESC', function (err, results, fields) {
+		dbPool.query('SELECT tb_post2.*, tb_user2.avatar, (SELECT COUNT(*) FROM tb_comment2 WHERE postId = tb_post2.Id) AS commentCount FROM tb_post2 JOIN tb_user2 ON tb_post2.author = tb_user2.username ORDER BY posttime DESC', function (err, results, fields) {
 			if (err) {
 				callback({ ok: false, msg: 'database error: ' + err.sqlMessage })
 			} else {
@@ -26,7 +26,7 @@ module.exports = {
 	},
 
 	queryPostsByAuthor: function queryPostsByAuthor(author, callback) {
-		dbPool.query('SELECT tb_post2.*, tb_user2.avatar FROM tb_post2 JOIN tb_user2 ON tb_post2.author = tb_user2.username WHERE tb_post2.author=? ORDER BY posttime DESC', [author], function (err, results, fields) {
+		dbPool.query('SELECT tb_post2.*, tb_user2.avatar, (SELECT COUNT(*) FROM tb_comment2 WHERE postId = tb_post2.Id) AS commentCount FROM tb_post2 JOIN tb_user2 ON tb_post2.author = tb_user2.username WHERE tb_post2.author=? ORDER BY posttime DESC', [author], function (err, results, fields) {
 			if (err) {
 				callback({ ok: false, msg: 'database error: ' + err.sqlMessage })
 			} else {
@@ -36,7 +36,7 @@ module.exports = {
 	},
 
 	queryPostById: function queryPostById(id, callback) {
-		dbPool.query('SELECT tb_post2.*, tb_user2.avatar FROM tb_post2 JOIN tb_user2 ON tb_post2.author = tb_user2.username WHERE tb_post2.Id=? ORDER BY posttime DESC', [id], function (err, results, fields) {
+		dbPool.query('SELECT tb_post2.*, tb_user2.avatar, (SELECT COUNT(*) FROM tb_comment2 WHERE postId = tb_post2.Id) AS commentCount FROM tb_post2 JOIN tb_user2 ON tb_post2.author = tb_user2.username WHERE tb_post2.Id=? ORDER BY posttime DESC', [id], function (err, results, fields) {
 			if (err) {
 				callback({ ok: false, msg: 'database error: ' + err.sqlMessage })
 			} else {
@@ -55,7 +55,7 @@ module.exports = {
 							throw error;
 						});
 					}
-					connection.query('SELECT tb_post2.*, tb_user2.avatar FROM tb_post2 JOIN tb_user2 ON tb_post2.author = tb_user2.username WHERE tb_post2.Id=? ORDER BY posttime DESC', [id], function (error, results, fields) {
+					connection.query('SELECT tb_post2.*, tb_user2.avatar, (SELECT COUNT(*) FROM tb_comment2 WHERE postId = tb_post2.Id) AS commentCount FROM tb_post2 JOIN tb_user2 ON tb_post2.author = tb_user2.username WHERE tb_post2.Id=? ORDER BY posttime DESC', [id], function (error, results, fields) {
 						if (error) {
 							return connection.rollback(function () {
 								throw error;

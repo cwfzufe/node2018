@@ -1,5 +1,6 @@
 const express=require('express')
 const postModel = require('../models/post')
+const commentModel = require('../models/comment')
 const checkLogin = require('../middlewares/check').checkLogin
 
 const router = express.Router()
@@ -52,12 +53,15 @@ router.post('/create', checkLogin, function(req, res){
 
 router.get('/:postId', function(req, res){
 	postModel.queryPostByIdAddPv(req.params.postId, function(jsonRes){
-			if (jsonRes.ok) {
-				res.render('post', {post: jsonRes.data[0]})
+		commentModel.queryCommentsByPostId(req.params.postId, function(jsonResComment){
+			console.log(jsonRes.data.length)
+			if (jsonRes.ok && jsonRes.data.length == 1) {
+				res.render('post', {post: jsonRes.data[0], comments: jsonResComment.data})
 			} else {
-				'<script>alert("查询失败。'+jsonRes.msg+'");location="javascript:history.go(-1)";</script>'
-			}			
-		})
+				res.send('<script>alert("查询失败。'+jsonRes.msg+'");location="javascript:history.go(-1)";</script>')
+			}	
+		})				
+	})
 })
 
 

@@ -21,7 +21,7 @@
           <p class="blog-post-meta"><%= post.posttime %> by
             <a href="/posts?author=<%= post.author %>"><%= post.author %></a>.&nbsp;&nbsp;
             <img src="/images/font-visited.png" height="16">(<%= post.pv %>)
-            <img src="/images/font-comment.png" height="16">(??)</p>
+            <img src="/images/font-comment.png" height="16">(<%= post.commentCount %>)</p>
 
           <p>
 			<%= post.content %>
@@ -54,35 +54,42 @@
       <div class="col-md-1"></div>
       <div class="col-md-9">
 	  
-	  
-        <div class="blog-comment">
+	  <% comments.forEach(function(comment){ %>
+		<div class="blog-comment">
           <div class="blog-comment avatar">
-            <img src="/upload/46bc815ee96e2cbf994040fe52301362.png" />
+            <img src="/<%= comment.avatar.substring(7) %>" />
           </div>
           <div class="blog-comment content">
-            <p class="blog-post-meta">Tue May 22 2018 11:22:13 GMT+0800 (CST) by
-              <a href="#">dd@dd.com</a>
+            <p class="blog-post-meta"><%= comment.commentTime %> by
+              <a href="/posts?author=<%= comment.author %>"><%= comment.author %></a>
             </p>
-            <p>dddd
-			
+            <p>
+			<%= comment.content %>			
 			</p>
+			<% if (user && user.username == comment.author ) { %>
+			<a href="/comments/<%= comment.Id %>/remove">Remove</a>
+			<% } %>
           </div>
-        </div>
-	  
-        <div class="blog-comment">
+        </div>	  
+	  <% }) %>
+        
+	         
+		
+		<% if (user) { %>
+		<div class="blog-comment">
           <div class="blog-comment avatar">
-            <img src="/upload/6e3945991c6f018037762ff25f3175c3.jpg" />
+            <img src="/<%= user.avatar.substring(7) %>" />
           </div>
-          <div class="blog-comment content">
-            <p class="blog-post-meta">Tue May 22 2018 10:53:38 GMT+0800 (CST) by
-              <a href="#">aa@aa.com</a>
-            </p>
-            <p>comment test 1
-			
-			</p>
+          <div class="blog-comment newcontent">
+            <form method="post" action="/comments">
+              <textarea id="comment" name="comment" class="form-control" placeholder="Write your comments (less than 1000 words, markdown grammar is supported)"
+                rows="5" required></textarea>
+				<input type="hidden" value="<%= post.Id %>" name="postid" id="postid">
+              <button class="btn btn-lg btn-primary" type="submit">Commit</button>
+            </form>
           </div>
-        </div>
-	  
+        </div>	  
+		<% } %>
 
 	  
       </div>

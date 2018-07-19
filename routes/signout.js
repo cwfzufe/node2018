@@ -1,11 +1,11 @@
 const express=require('express')
-const checkLogin = require('../middlewares/check').checkNotLogin
+const checkLogin = require('../middlewares/check').checkLogin
 
 const router = express.Router()
 
 // 业务逻辑代码：接口
 router.get('/', checkLogin, function(req, res){
-	delete req.session.user
+	req.session.user = null
 	res.redirect('/posts')
 })
 
